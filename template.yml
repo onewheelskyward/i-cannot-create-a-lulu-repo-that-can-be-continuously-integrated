@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Lambda slack webhook middle-function'
+
+Parameters:
+  MemorySize:
+    Description: MemorySize of the Lambda
+    Type: String
+    Default: 512
+  Timeout:
+    Description: Timeout of the Lambda
+    Type: String
+    Default: 10
+  SlackWebhookUri:
+    Description: Connetion endpoint to send data to Slack
+    Type: String
+
+Resources:
+  SlackHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.get
+      Runtime: ruby2.5
+      MemorySize: !Ref MemorySize
+      Timeout: !Ref Timeout
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref RubyExampleDDBTable
+      Environment:
+        Variables:
+          slack_webhook_uri: !Ref SlackWebhookUri
+
+Outputs:
+  HelloRubyRecordFunction:
+    Description: Slack webhook connector for \#digi-deployments
+    Value:
+      Fn::GetAtt:
+        - SlackHandlerFunction
+        - Arn
